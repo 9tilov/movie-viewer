@@ -1,8 +1,6 @@
 package com.example.toor.movieviewer.core.base;
 
 import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -15,16 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.toor.movieviewer.viewmodel.MainViewModel;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
-
 public abstract class BaseFragment<M extends ViewModel, B extends ViewDataBinding> extends Fragment {
-
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
 
     @Override
     @CallSuper
@@ -34,23 +23,19 @@ public abstract class BaseFragment<M extends ViewModel, B extends ViewDataBindin
         configureViewModel();
     }
 
-    private void configureDagger() {
-        AndroidSupportInjection.inject(this);
-    }
-
-    private void configureViewModel() {
-        ViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel.class);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, getLayoutResId(), container, false);
+        getBinding(binding);
         return binding.getRoot();
     }
 
-    protected abstract Class<M> getViewModel();
+
+    protected abstract void getBinding(ViewDataBinding binding);
+    protected abstract void configureDagger();
+    protected abstract void configureViewModel();
 
     protected abstract
     @LayoutRes

@@ -21,7 +21,6 @@ public class MainViewModel extends ViewModel {
     MainViewModel(DataRepository dataRepository) {
         this.repository = dataRepository;
         movies = dataRepository.getMoviewLiveList();
-        Timber.d("Movies = " + movies.getValue().size());
     }
 
     public LiveData<List<Movie>> getMovieList() {
