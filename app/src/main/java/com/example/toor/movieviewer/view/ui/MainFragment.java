@@ -1,10 +1,9 @@
 package com.example.toor.movieviewer.view.ui;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.example.toor.movieviewer.R;
 import com.example.toor.movieviewer.core.base.BaseFragment;
@@ -13,17 +12,11 @@ import com.example.toor.movieviewer.model.data.Movie;
 import com.example.toor.movieviewer.view.adapter.MovieAdapter;
 import com.example.toor.movieviewer.viewmodel.MainViewModel;
 
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import timber.log.Timber;
 
-public class MainFragment extends BaseFragment<MainViewModel, ViewDataBinding> implements MovieAdapter.ItemSelectedListener {
+public class MainFragment extends BaseFragment<MainViewModel, MainFragmentBinding> implements MovieAdapter.ItemSelectedListener {
 
     private MovieAdapter adapter;
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-    private MainViewModel viewModel;
     private MainFragmentBinding binding;
 
     public static MainFragment newInstance() {
@@ -38,18 +31,17 @@ public class MainFragment extends BaseFragment<MainViewModel, ViewDataBinding> i
     }
 
     @Override
-    protected void getBinding(ViewDataBinding binding) {
-        this.binding = (MainFragmentBinding) binding;
+    protected void getBinding(MainFragmentBinding binding) {
+        this.binding = binding;
     }
 
     @Override
-    protected void configureDagger() {
-        AndroidSupportInjection.inject(this);
+    protected Class<MainViewModel> getViewModel() {
+        return MainViewModel.class;
     }
 
     @Override
-    protected void configureViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel.class);
+    protected void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState, MainViewModel viewModel) {
         binding.recyclerView.setAdapter(adapter);
         viewModel.getMovieList().observe(this, movies -> {
             adapter.setData(movies);
@@ -64,6 +56,10 @@ public class MainFragment extends BaseFragment<MainViewModel, ViewDataBinding> i
 
     @Override
     public void onItemSelected(Movie item) {
+        sharedViewModel.select(item);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, DetailFragment.newInstance())
+                .commitNow();
         Timber.d("click");
     }
 }
