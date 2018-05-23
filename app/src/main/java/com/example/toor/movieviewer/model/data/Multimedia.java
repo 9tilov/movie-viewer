@@ -1,5 +1,11 @@
 package com.example.toor.movieviewer.model.data;
 
+import android.databinding.BindingAdapter;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -48,6 +54,15 @@ public class Multimedia {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    @BindingAdapter({"app:glideBinding", "app:placeholder"})
+    public static void bindImage(ImageView imageView, String url, Drawable placeHolder) {
+        Glide.with(imageView)
+                .setDefaultRequestOptions(RequestOptions.placeholderOf(placeHolder))
+                .asBitmap()
+                .load(url)
+                .into(imageView);
     }
 
 }
