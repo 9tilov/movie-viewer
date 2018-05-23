@@ -12,6 +12,7 @@ import com.example.toor.movieviewer.model.data.Movie;
 import com.example.toor.movieviewer.view.adapter.MovieAdapter;
 import com.example.toor.movieviewer.viewmodel.MainViewModel;
 
+import dagger.android.support.AndroidSupportInjection;
 import timber.log.Timber;
 
 public class MainFragment extends BaseFragment<MainViewModel, MainFragmentBinding> implements MovieAdapter.ItemSelectedListener {
@@ -59,7 +60,8 @@ public class MainFragment extends BaseFragment<MainViewModel, MainFragmentBindin
         sharedViewModel.select(item);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, DetailFragment.newInstance())
-                .commitNow();
+                .addToBackStack(null)
+                .commit();
         Timber.d("click");
     }
 }

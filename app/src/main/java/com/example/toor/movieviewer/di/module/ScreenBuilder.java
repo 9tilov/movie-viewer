@@ -1,5 +1,6 @@
 package com.example.toor.movieviewer.di.module;
 
+import com.example.toor.movieviewer.view.ui.DetailFragment;
 import com.example.toor.movieviewer.view.ui.MainActivity;
 import com.example.toor.movieviewer.view.ui.MainFragment;
 
@@ -14,4 +15,7 @@ public abstract class ScreenBuilder {
 
     @ContributesAndroidInjector
     abstract MainFragment contributeMainFragment();
+
+    @ContributesAndroidInjector
+    abstract DetailFragment contributeDetailFragment();
 }

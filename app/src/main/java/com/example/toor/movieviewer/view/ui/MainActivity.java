@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())
-                    .commitNow();
+                    .commit();
         }
     }
 

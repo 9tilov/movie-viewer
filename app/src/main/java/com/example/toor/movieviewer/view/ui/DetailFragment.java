@@ -1,6 +1,5 @@
 package com.example.toor.movieviewer.view.ui;
 
-import android.databinding.BindingAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +9,8 @@ import com.example.toor.movieviewer.R;
 import com.example.toor.movieviewer.core.base.BaseFragment;
 import com.example.toor.movieviewer.databinding.DetailFragmentBinding;
 import com.example.toor.movieviewer.viewmodel.DetailViewModel;
+
+import dagger.android.support.AndroidSupportInjection;
 
 public class DetailFragment extends BaseFragment<DetailViewModel, DetailFragmentBinding> {
 
