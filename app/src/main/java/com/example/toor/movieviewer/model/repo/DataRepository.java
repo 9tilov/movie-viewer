@@ -1,66 +1,68 @@
 package com.example.toor.movieviewer.model.repo;
 
-import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.LiveDataReactiveStreams;
 
 import com.example.toor.movieviewer.core.AppSchedulerProvider;
 import com.example.toor.movieviewer.core.base.BaseViewModel;
 import com.example.toor.movieviewer.model.api.Api;
 import com.example.toor.movieviewer.model.data.Movie;
-import com.example.toor.movieviewer.model.data.Movies;
+import com.example.toor.movieviewer.model.db.AppDatabase;
+import com.example.toor.movieviewer.model.db.MovieDao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import io.reactivex.Observer;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import timber.log.Timber;
+import io.reactivex.functions.Function;
 
+@Singleton
 public class DataRepository implements BaseViewModel {
 
     private CompositeDisposable disposables = new CompositeDisposable();
     private final Api api;
     private final AppSchedulerProvider schedulerProvider;
-    private final MutableLiveData<List<Movie>> moviewMutableLiveData;
-    private final List<Movie> movies;
+    private final MovieDao movieDao;
 
     @Inject
-    DataRepository(Api api, AppSchedulerProvider schedulerProvider) {
+    public DataRepository(AppDatabase database, Api api, AppSchedulerProvider schedulerProvider) {
         this.api = api;
+        this.movieDao = database.movieDao();
         this.schedulerProvider = schedulerProvider;
-        moviewMutableLiveData = new MutableLiveData<>();
-        movies = new ArrayList<>();
-        moviewMutableLiveData.postValue(movies);
     }
 
-    public MutableLiveData<List<Movie>> getMoviewLiveList() {
-        api.getMovies()
-                .observeOn(schedulerProvider.ui())
+    public LiveData<List<Movie>> getMovieLiveList() {
+        Flowable<List<Movie>> movies = Flowable.create(emitter -> new NetworkBoundSource<List<Movie>, List<Movie>>(emitter) {
+
+            @Override
+            public Single<List<Movie>> getRemote() {
+                return api.getMovies();
+            }
+
+            @Override
+            public Flowable<List<Movie>> getLocal() {
+                return movieDao.getAll();
+            }
+
+            @Override
+            public void saveCallResult(List<Movie> data) {
+
+            }
+
+            @Override
+            public Function<List<Movie>, List<Movie>> mapper() {
+                return movies1 -> movies1;
+            }
+        }, BackpressureStrategy.BUFFER);
+        disposables.add(movies
                 .subscribeOn(schedulerProvider.io())
-                .subscribe(new Observer<Movies>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposables.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Movies movies) {
-                        moviewMutableLiveData.postValue(movies.getMovies());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("Error");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Timber.d("Complete");
-                    }
-                });
-        return moviewMutableLiveData;
+                .observeOn(schedulerProvider.ui()).subscribe());
+        return LiveDataReactiveStreams.fromPublisher(movies);
     }
 
     @Override

@@ -1,29 +1,20 @@
 package com.example.toor.movieviewer.di.component;
 
-import android.app.Application;
-
 import com.example.toor.movieviewer.App;
+import com.example.toor.movieviewer.di.module.ActivityModule;
 import com.example.toor.movieviewer.di.module.AppModule;
-import com.example.toor.movieviewer.di.module.NetworkModule;
-import com.example.toor.movieviewer.di.module.ScreenBuilder;
+import com.example.toor.movieviewer.di.module.FragmentModule;
 
 import javax.inject.Singleton;
 
-import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjector;
-import dagger.android.support.AndroidSupportInjectionModule;
 
 @Singleton
-@Component(modules={NetworkModule.class, ScreenBuilder.class, AppModule.class})
-public interface AppComponent {
+@Component(modules = {AppModule.class, ActivityModule.class, FragmentModule.class})
+interface AppComponent extends AndroidInjector<App> {
 
     @Component.Builder
-    interface Builder {
-        @BindsInstance
-        Builder application(Application application);
-        AppComponent build();
+    abstract class Builder extends AndroidInjector.Builder<App> {
     }
-
-    void inject(App app);
 }

@@ -10,8 +10,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class MainViewModel extends ViewModel {
 
     private final LiveData<List<Movie>> movies;
@@ -20,7 +18,7 @@ public class MainViewModel extends ViewModel {
     @Inject
     MainViewModel(DataRepository dataRepository) {
         this.repository = dataRepository;
-        movies = dataRepository.getMoviewLiveList();
+        movies = dataRepository.getMovieLiveList();
     }
 
     public LiveData<List<Movie>> getMovieList() {

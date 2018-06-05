@@ -1,17 +1,17 @@
 package com.example.toor.movieviewer.di.module;
 
 import com.example.toor.movieviewer.view.ui.DetailFragment;
-import com.example.toor.movieviewer.view.ui.MainActivity;
 import com.example.toor.movieviewer.view.ui.MainFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
-@Module
-public abstract class ScreenBuilder {
+/**
+ * Created by Philippe on 02/03/2018.
+ */
 
-    @ContributesAndroidInjector
-    abstract MainActivity contributeMainActivity();
+@Module
+public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract MainFragment contributeMainFragment();

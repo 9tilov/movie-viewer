@@ -38,11 +38,12 @@ dependencies {
 
     //ArcComponents
     implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation "android.arch.persistence.room:runtime:1.1.0"
     implementation "android.arch.lifecycle:runtime:1.1.1"
-//    implementation "android.arch.persistence.room:rxjava2:1.0.0"
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    implementation "android.arch.lifecycle:reactivestreams:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
+    implementation "android.arch.persistence.room:runtime:1.1.0"
+    implementation "android.arch.persistence.room:rxjava2:1.1.0"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
     //Network
     implementation "com.squareup.okhttp3:okhttp:3.10.0"
