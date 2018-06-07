@@ -1,8 +1,5 @@
 package com.example.toor.movieviewer.model.repo;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.LiveDataReactiveStreams;
-
 import com.example.toor.movieviewer.core.AppSchedulerProvider;
 import com.example.toor.movieviewer.core.base.BaseViewModel;
 import com.example.toor.movieviewer.model.api.Api;
@@ -26,43 +23,39 @@ public class DataRepository implements BaseViewModel {
 
     private CompositeDisposable disposables = new CompositeDisposable();
     private final Api api;
-    private final AppSchedulerProvider schedulerProvider;
     private final MovieDao movieDao;
 
     @Inject
-    public DataRepository(AppDatabase database, Api api, AppSchedulerProvider schedulerProvider) {
+    public DataRepository(AppDatabase database, Api api) {
         this.api = api;
         this.movieDao = database.movieDao();
-        this.schedulerProvider = schedulerProvider;
     }
 
-    public LiveData<List<Movie>> getMovieLiveList() {
-        Flowable<List<Movie>> movies = Flowable.create(emitter -> new NetworkBoundSource<List<Movie>, List<Movie>>(emitter) {
-
-            @Override
-            public Single<List<Movie>> getRemote() {
-                return api.getMovies();
-            }
-
-            @Override
-            public Flowable<List<Movie>> getLocal() {
-                return movieDao.getAll();
-            }
-
-            @Override
-            public void saveCallResult(List<Movie> data) {
-
-            }
-
-            @Override
-            public Function<List<Movie>, List<Movie>> mapper() {
-                return movies1 -> movies1;
-            }
-        }, BackpressureStrategy.BUFFER);
-        disposables.add(movies
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui()).subscribe());
-        return LiveDataReactiveStreams.fromPublisher(movies);
+    public Flowable<List<Movie>> getMovieLiveList() {
+//        Flowable<List<Movie>> movies = Flowable.create(emitter -> new NetworkBoundSource<List<Movie>, List<Movie>>(emitter) {
+//
+//            @Override
+//            public Flowable<List<Movie>> getRemote() {
+//                return api.getMovies();
+//            }
+//
+//            @Override
+//            public Flowable<List<Movie>> getLocal() {
+//                return movieDao.getAll();
+//            }
+//
+//            @Override
+//            public void saveCallResult(List<Movie> data) {
+//                int a = data.size();
+//                int b = 1;
+//            }
+//
+//            @Override
+//            public Function<List<Movie>, List<Movie>> mapper() {
+//                return movies1 -> movies1;
+//            }
+//        }, BackpressureStrategy.BUFFER);
+        return api.getMovies().toFlowable();
     }
 
     @Override

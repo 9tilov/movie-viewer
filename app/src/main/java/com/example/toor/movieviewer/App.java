@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import timber.log.Timber;
 
 public class App extends Application implements HasActivityInjector {
 
@@ -22,6 +23,7 @@ public class App extends Application implements HasActivityInjector {
     public void onCreate() {
         super.onCreate();
         this.initDagger();
+        Timber.plant(new Timber.DebugTree());
         context = getApplicationContext();
     }
 

@@ -1,6 +1,6 @@
 package com.example.toor.movieviewer.viewmodel;
 
-import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.toor.movieviewer.model.data.Movie;
@@ -10,24 +10,37 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
+
 public class MainViewModel extends ViewModel {
 
-    private final LiveData<List<Movie>> movies;
+    private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final DataRepository repository;
 
     @Inject
     MainViewModel(DataRepository dataRepository) {
         this.repository = dataRepository;
-        movies = dataRepository.getMovieLiveList();
+        loadMovies();
     }
 
-    public LiveData<List<Movie>> getMovieList() {
+    private void loadMovies() {
+        compositeDisposable.add(repository.getMovieLiveList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(movies1 -> movies.setValue(movies1), t -> Timber.d(t, "get comments error = " + t.getMessage())));
+    }
+
+    public MutableLiveData<List<Movie>> getMovieList() {
         return movies;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        repository.onClear();
+        compositeDisposable.clear();
     }
 }
