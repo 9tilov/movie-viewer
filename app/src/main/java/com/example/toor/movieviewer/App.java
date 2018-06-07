@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.example.toor.movieviewer.di.component.DaggerAppComponent;
+import com.facebook.stetho.Stetho;
 
 import javax.inject.Inject;
 
@@ -24,6 +25,7 @@ public class App extends Application implements HasActivityInjector {
         super.onCreate();
         this.initDagger();
         Timber.plant(new Timber.DebugTree());
+        Stetho.initializeWithDefaults(this);
         context = getApplicationContext();
     }
 

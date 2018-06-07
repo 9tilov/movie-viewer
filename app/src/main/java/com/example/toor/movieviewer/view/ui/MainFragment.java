@@ -45,8 +45,8 @@ public class MainFragment extends BaseFragment<MainViewModel, MainFragmentBindin
     protected void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState, MainViewModel viewModel) {
         binding.recyclerView.setAdapter(adapter);
         viewModel.getMovieList().observe(this, movies -> {
-            adapter.setData(movies);
-            Timber.d("Size = " + movies.size());
+            adapter.setData(movies.getMovies());
+            Timber.d("Size = " + movies.getMovies().size());
         });
     }
 

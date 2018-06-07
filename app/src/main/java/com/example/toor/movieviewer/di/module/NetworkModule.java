@@ -2,6 +2,7 @@ package com.example.toor.movieviewer.di.module;
 
 import com.example.toor.movieviewer.core.Constants;
 import com.example.toor.movieviewer.model.api.Api;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import javax.inject.Singleton;
 
@@ -26,12 +27,18 @@ public class NetworkModule {
         return httpLoggingInterceptor;
     }
 
+    @Provides
+    @Singleton
+    StethoInterceptor provideStethoInterceptor() {
+        return new StethoInterceptor();
+    }
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttp(HttpLoggingInterceptor interceptor) {
+    OkHttpClient provideOkHttp(HttpLoggingInterceptor interceptor, StethoInterceptor stethoInterceptor) {
         return new OkHttpClient.Builder()
                 .addNetworkInterceptor(interceptor)
+                .addNetworkInterceptor(stethoInterceptor)
                 .build();
     }
 

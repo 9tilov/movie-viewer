@@ -1,22 +1,18 @@
 package com.example.toor.movieviewer.model.repo;
 
-import com.example.toor.movieviewer.core.AppSchedulerProvider;
 import com.example.toor.movieviewer.core.base.BaseViewModel;
 import com.example.toor.movieviewer.model.api.Api;
 import com.example.toor.movieviewer.model.data.Movie;
+import com.example.toor.movieviewer.model.data.Movies;
 import com.example.toor.movieviewer.model.db.AppDatabase;
 import com.example.toor.movieviewer.model.db.MovieDao;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Function;
+import timber.log.Timber;
 
 @Singleton
 public class DataRepository implements BaseViewModel {
@@ -31,7 +27,8 @@ public class DataRepository implements BaseViewModel {
         this.movieDao = database.movieDao();
     }
 
-    public Flowable<List<Movie>> getMovieLiveList() {
+    public Flowable<Movies> getMovieLiveList() {
+        Timber.d("aaa23");
 //        Flowable<List<Movie>> movies = Flowable.create(emitter -> new NetworkBoundSource<List<Movie>, List<Movie>>(emitter) {
 //
 //            @Override
@@ -55,7 +52,17 @@ public class DataRepository implements BaseViewModel {
 //                return movies1 -> movies1;
 //            }
 //        }, BackpressureStrategy.BUFFER);
-        return api.getMovies().toFlowable();
+        return Flowable.merge(getFromDb(), getFromNetwork());
+    }
+
+    private Flowable<Movies> getFromDb() {
+        return movieDao.getAll();
+    }
+
+    private Flowable<Movies> getFromNetwork() {
+        return api.getMovies()
+                .doOnSuccess(movieDao::insert).toFlowable()
+                .doOnError(throwable -> Timber.d("moggot = " + throwable.getMessage()));
     }
 
     @Override

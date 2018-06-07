@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.toor.movieviewer.model.data.Movie;
+import com.example.toor.movieviewer.model.data.Movies;
 import com.example.toor.movieviewer.model.repo.DataRepository;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import timber.log.Timber;
 
 public class MainViewModel extends ViewModel {
 
-    private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
+    private final MutableLiveData<Movies> movies = new MutableLiveData<>();
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final DataRepository repository;
 
@@ -34,7 +35,7 @@ public class MainViewModel extends ViewModel {
                 .subscribe(movies1 -> movies.setValue(movies1), t -> Timber.d(t, "get comments error = " + t.getMessage())));
     }
 
-    public MutableLiveData<List<Movie>> getMovieList() {
+    public MutableLiveData<Movies> getMovieList() {
         return movies;
     }
 

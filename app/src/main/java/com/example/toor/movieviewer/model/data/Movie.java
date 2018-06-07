@@ -1,16 +1,10 @@
 package com.example.toor.movieviewer.model.data;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Entity
 public class Movie {
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
     @SerializedName("display_title")
     @Expose
     private String displayTitle;
@@ -41,14 +35,6 @@ public class Movie {
     @SerializedName("multimedia")
     @Expose
     private Multimedia multimedia;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getDisplayTitle() {
         return displayTitle;
